@@ -12,7 +12,7 @@
 ## 二、职责
 
 1. **平台与启动器。** 让 Apple silicon 上的 macOS 15 使用 Metal 3，同时保留 macOS 26+ / Metal 4、现有游戏版本和 iOS/iPadOS 支持。启动器只负责 UI、设置和调用，通过现有配置、命令行参数或环境变量传递设置。
-2. **上游与分支。** 以 `https://github.com/ly05010419/MacNativeGames` 的最新代码、README 和构建脚本为准。`main` 仅跟随 `upstream/main`；`macos15` 为长期维护分支；fork 规则文件随 `macos15` 版本化；新功能从最新的 `macos15` 派生 `feature/*`，不直接基于 `main` 或旧 feature 分支。实际分支名不同先核实，不擅自重命名。
+2. **上游与分支。** 以 `https://github.com/ly05010419/MacNativeGames` 的最新代码、README 和构建脚本为准。`main` 固定跟踪 `origin/main`；`upstream/main` 作为独立上游单独跟踪，更新时先合入 `origin/main`，再由 `main` 同步。`macos15` 为长期维护分支；fork 规则文件随 `macos15` 版本化；新功能从最新的 `macos15` 派生 `feature/*`，不直接基于 `main` 或旧 feature 分支。实际分支名不同先核实，不擅自重命名。
 3. **参考实现。** `https://github.com/1918662410-ship-it/MacNativeGames` 可用于研究既有 Metal 3 方案，但只选择性移植必要实现，不整目录覆盖，不机械照搬旧 Fork。
 
 ## 三、工作流
@@ -21,7 +21,7 @@
 
 1. 阅读涉及源码、`README.md`、`build_app.py`、`games/totk/Makefile` 和相关测试，确认文件与构建目标存在。
 2. 检查 `git status --short --branch`、`git remote -v`、`git branch -vv`，识别未提交修改，不覆盖用户工作。
-3. 如允许联网，`git fetch upstream`，记录上游 SHA；不能获取时说明本次代码快照。
+3. 如允许联网，`git fetch origin upstream`，记录上游与 `origin/main` 的 SHA；不能获取时说明本次代码快照。
 4. 简述计划：改哪些文件、为何必须改上游文件、如何隔离 Metal 3/4、如何验证。
 
 ### 2. 开发时
@@ -34,7 +34,7 @@
 ### 3. 同步上游
 
 1. 工作区须干净；有未提交修改先告知用户，不擅自丢弃或暂存。
-2. `git fetch upstream`，从 `macos15` 创建唯一命名的 `sync/upstream-*` 临时分支，执行 `git merge upstream/main`。
+2. `git fetch origin upstream`；若 `upstream/main` 有更新，先将其合入 `origin/main`。再从 `macos15` 创建唯一命名的 `sync/upstream-*` 临时分支，执行 `git merge origin/main`。
 3. 冲突时保留上游新功能和修复，再重新接入 Metal 3 兼容逻辑；不得整文件选 `ours` 或 `theirs`。
 4. 验证并说明风险、获得授权后才合入 `macos15`；上游同步与新功能分开提交。
 5. 仅挑选单个提交时可用 `git cherry-pick -x`，并检查依赖与回归风险。
