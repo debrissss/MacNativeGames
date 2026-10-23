@@ -3,6 +3,8 @@ __pycache__/
 *.pyc
 # what players' iPhones / iPads noted for the shared shader list (ios/tools/shader_contrib_watch.py): sent in an issue, not committed
 /shader-list-contribution/
+# local reference material, kept out of the repo
+/references/
 # never commit keys or game files
 *.keys
 *.xci
